@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns="http://query.yahooapis.com/v1/schema/table.xsd" https="true">
+	<meta>
+		<sampleQuery>select * from {table} where username="twitterusernamehere" and password="twitterpasswordhere"</sampleQuery>
+	</meta>
+	<bindings>
+		<select itemPath="" produces="XML">
+			<urls>
+				<url>https://twitter.com/statuses/public_timeline.xml</url>
+			</urls>
+			<execute><![CDATA[
+      var r = null;
+      r = request.get().response;
+      response.object = r;
+      ]]></execute>
+		</select>
+	</bindings>
+</table>
