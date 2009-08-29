@@ -16,8 +16,6 @@ import twitter4j.RateLimitStatus;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.http.HttpClient;
-import twitter4j.http.PostParameter;
 import twitter4j.http.Response;
 
 /**
@@ -30,6 +28,7 @@ public class YqlTwitter extends Twitter {
 	 * 
 	 */
 	private static final long serialVersionUID = -4545368679112332540L;
+	private static final boolean DEBUG = System.getProperty("YqlTwitter.debug") != null;
 
 	/*
 	private static final String API_KEY = "dj0yJmk9VXZBSzNjc0Vwcm1MJmQ9WVdrOVlVczBSVkJNTkdzbWNHbzlNVEV4TWpjNE5EZ3lNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD01Mg--";
@@ -80,28 +79,10 @@ public class YqlTwitter extends Twitter {
 		super(id, password);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Response get(String url, PostParameter[] params,
-			boolean authenticate) throws TwitterException {
-		if (null != params && params.length > 0) {
-			url += "?" + HttpClient.encodeParameters(params);
-		}
-		String q = String
-				.format(
-						"use '%1$stwitter.friends_timeline.xml' as ft;"
-								+ " select * from ft where username='%2$s' and password='%3$s'",
-						TABLE_BASE_URL, getUserId(), getPassword());
-		url = createYqlUrl(q);
-		Response response = http.get(url, authenticate);
-		return extractor.extract(response);
-	}
-
 	protected Response get(String q, boolean authenticate)
 			throws TwitterException {
 		String url = createYqlUrl(q);
+		debug("Get: " + url);
 		Response response = http.get(url, authenticate);
 		return extractor.extract(response);
 	}
@@ -109,8 +90,23 @@ public class YqlTwitter extends Twitter {
 	protected Response post(String q, boolean authenticate)
 			throws TwitterException {
 		String url = createYqlUrl(q);
+		debug("Post: " + url);
 		Response response = http.post(url, authenticate);
 		return extractor.extract(response);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Status> getFriendsTimeline() throws TwitterException {
+		String format = "use '%1$stwitter.friends_timeline.xml' as ft;"
+				+ " select * from ft where username='%2$s' and password='%3$s'";
+		String q = String.format(format, TABLE_BASE_URL, getUserId(), getPassword());
+		Response response = get(q, true);
+		return invokeStaticMethod(Status.class, "constructStatuses",
+				new Class<?>[] { Response.class, Twitter.class }, new Object[] {
+						response, this });
 	}
 
 	/**
@@ -220,6 +216,12 @@ public class YqlTwitter extends Twitter {
 			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	/* package */static void debug(String message) {
+		if (DEBUG) {
+			System.out.println(message);
 		}
 	}
 }
