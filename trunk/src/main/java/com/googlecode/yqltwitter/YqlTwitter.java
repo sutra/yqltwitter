@@ -1,5 +1,6 @@
 /**
- * 
+ * Copyright (c) 2009, Sutra Zhou
+ * All rights reserved.
  */
 package com.googlecode.yqltwitter;
 
