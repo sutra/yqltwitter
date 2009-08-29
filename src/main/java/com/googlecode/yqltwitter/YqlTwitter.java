@@ -38,7 +38,7 @@ public class YqlTwitter extends Twitter {
 
 	private static final String YQL = "https://query.yahooapis.com/v1/public/yql?q=";
 	private static final String enc = "UTF-8";
-	private static final String TABLE_BASE_URL = "http://shuqun.com/twitter/";
+	private static final String TABLE_BASE_URL = "http://yqltwitter.googlecode.com/svn/trunk/src/main/table/";
 
 	private final YqlResponseResultsExtractor extractor = new YqlResponseResultsExtractor();
 
