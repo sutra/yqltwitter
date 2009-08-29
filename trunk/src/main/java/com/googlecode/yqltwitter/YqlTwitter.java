@@ -131,7 +131,7 @@ public class YqlTwitter extends Twitter {
 	 */
 	@Override
 	public RateLimitStatus rateLimitStatus() throws TwitterException {
-		String format = "use '%1$srate_limit_status.xml.1' as rls;"
+		String format = "use '%1$srate_limit_status.xml' as rls;"
 				+ "select * from rls";
 		String q = String.format(format, TABLE_BASE_URL);
 		Response response = get(q, null != getUserId() && null != getPassword());
@@ -154,7 +154,7 @@ public class YqlTwitter extends Twitter {
 	 */
 	@Override
 	public Status updateStatus(String status) throws TwitterException {
-		String format = "use '%1$stwitter.status.xml.2' as s;"
+		String format = "use '%1$stwitter.status.xml' as s;"
 				+ " insert into s(status,username,password,source) values ('%2$s','%3$s','%4$s','%5$s')";
 		String q = String.format(format, TABLE_BASE_URL, status, getUserId(),
 				getPassword(), source);
