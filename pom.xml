@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.googlecode.yqltwitter</groupId>
+	<artifactId>yqltwitter</artifactId>
+	<version>0.1</version>
+	<packaging>jar</packaging>
+	<name>YQLTwitter</name>
+	<url>http://code.google.com/p/yqltwitter/</url>
+	<description>An extension for twitter4j, that send HTTP request through YQL.</description>
+	<licenses>
+		<license>
+			<name>BSD style</name>
+			<url>http://yqltwitter.googlecode.com/svn/trunk/LICENSE.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>http://yqltwitter.googlecode.com/svn/trunk/</connection>
+		<developerConnection>https://yqltwitter.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://code.google.com/p/yqltwitter/source/browse/</url>
+	</scm>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadJavadocs>true</downloadJavadocs>
+					<downloadSources>true</downloadSources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.homeip.yusuke</groupId>
+			<artifactId>twitter4j</artifactId>
+			<version>2.0.10-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>
