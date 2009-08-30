@@ -10,6 +10,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import twitter4j.RateLimitStatus;
@@ -28,7 +30,7 @@ public class YqlTwitter extends Twitter {
 	 * 
 	 */
 	private static final long serialVersionUID = -4545368679112332540L;
-	private static final boolean DEBUG = System.getProperty("YqlTwitter.debug") != null;
+	private static final boolean DEBUG = true;//System.getProperty("YqlTwitter.debug") != null;
 
 	/*
 	private static final String API_KEY = "dj0yJmk9VXZBSzNjc0Vwcm1MJmQ9WVdrOVlVczBSVkJNTkdzbWNHbzlNVEV4TWpjNE5EZ3lNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD01Mg--";
@@ -104,9 +106,13 @@ public class YqlTwitter extends Twitter {
 				+ " select * from ft where username='%2$s' and password='%3$s'";
 		String q = String.format(format, TABLE_BASE_URL, getUserId(), getPassword());
 		Response response = get(q, true);
-		return invokeStaticMethod(Status.class, "constructStatuses",
-				new Class<?>[] { Response.class, Twitter.class }, new Object[] {
-						response, this });
+		try {
+			return constructStatuses(response);
+		} catch (TwitterException te) {
+			System.err.println(String.format("q: %1$s, results: %2$s", q,
+					response.asString()));
+			throw te;
+		}
 	}
 
 	/**
@@ -118,9 +124,7 @@ public class YqlTwitter extends Twitter {
 				+ " select * from pt";
 		String q = String.format(format, TABLE_BASE_URL);
 		Response response = get(q, false);
-		return invokeStaticMethod(Status.class, "constructStatuses",
-				new Class<?>[] { Response.class, Twitter.class }, new Object[] {
-						response, this });
+		return constructStatuses(response);
 	}
 
 	/**
@@ -132,8 +136,19 @@ public class YqlTwitter extends Twitter {
 				+ "select * from rls";
 		String q = String.format(format, TABLE_BASE_URL);
 		Response response = get(q, null != getUserId() && null != getPassword());
-		return newInstance(RateLimitStatus.class,
-				new Class<?>[] { Response.class }, new Object[] { response });
+		try {
+			return newInstance(RateLimitStatus.class,
+					new Class<?>[] { Response.class }, new Object[] { response });
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof TwitterException) {
+				throw (TwitterException) cause;
+			} else if (cause instanceof RuntimeException){
+				throw (RuntimeException) cause;
+			} else {
+				throw new RuntimeException(cause);
+			}
+		}
 	}
 
 	/**
@@ -156,8 +171,19 @@ public class YqlTwitter extends Twitter {
 		String q = String.format(format, TABLE_BASE_URL, status, getUserId(),
 				getPassword(), source);
 		Response response = post(q, true);
-		return newInstance(Status.class, new Class<?>[] { Response.class,
-				Twitter.class }, new Object[] { response, this });
+		try {
+			return newInstance(Status.class, new Class<?>[] { Response.class,
+					Twitter.class }, new Object[] { response, this });
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof TwitterException) {
+				throw (TwitterException) cause;
+			} else if (cause instanceof RuntimeException){
+				throw (RuntimeException) cause;
+			} else {
+				throw new RuntimeException(cause);
+			}
+		}
 	}
 
 	/**
@@ -176,8 +202,29 @@ public class YqlTwitter extends Twitter {
 		}
 	}
 
+	private List<Status> constructStatuses(Response response)
+			throws TwitterException {
+		Class<?>[] parameterTypes = new Class<?>[] { Response.class,
+				Twitter.class };
+		Object[] args = new Object[] { response, this };
+		try {
+			return invokeStaticMethod(Status.class, "constructStatuses",
+					parameterTypes, args);
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof TwitterException) {
+				throw (TwitterException) cause;
+			} else if (cause instanceof RuntimeException){
+				throw (RuntimeException) cause;
+			} else {
+				throw new RuntimeException(cause);
+			}
+		}
+	}
+
 	/* package */static <T> T newInstance(Class<T> clazz,
-			Class<?>[] parameterTypes, Object[] initargs) {
+			Class<?>[] parameterTypes, Object[] initargs)
+			throws InvocationTargetException {
 		try {
 			Constructor<T> c = clazz.getDeclaredConstructor(parameterTypes);
 			c.setAccessible(true);
@@ -192,14 +239,13 @@ public class YqlTwitter extends Twitter {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	/* package */static <T, R> R invokeStaticMethod(Class<T> clazz,
-			String name, Class<?>[] parameterTypes, Object[] args) {
+			String name, Class<?>[] parameterTypes, Object[] args)
+			throws InvocationTargetException {
 		Method m;
 		try {
 			m = Status.class.getDeclaredMethod(name, parameterTypes);
@@ -214,14 +260,14 @@ public class YqlTwitter extends Twitter {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
 	/* package */static void debug(String message) {
 		if (DEBUG) {
-			System.out.println(message);
+			System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+					.format(new Date())
+					+ " " + message);
 		}
 	}
 }

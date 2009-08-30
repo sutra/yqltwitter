@@ -7,6 +7,7 @@ package com.googlecode.yqltwitter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -40,6 +41,7 @@ public class YqlResponseResultsExtractor {
 	 */
 	public Response extract(Response response) {
 		try {
+			YqlTwitter.debug("Extract from: " + response.asString());
 			return toResponse(response);
 		} catch (XPathExpressionException e) {
 			throw new RuntimeException(e);
@@ -68,8 +70,18 @@ public class YqlResponseResultsExtractor {
 		Node results = (Node) expr.evaluate(document, XPathConstants.NODE);
 		String s = toString(results);
 		// LOG.debug(s);
-		Response ret = YqlTwitter.newInstance(Response.class,
-				new Class<?>[] { String.class }, new Object[] { s });
+		Response ret;
+		try {
+			ret = YqlTwitter.newInstance(Response.class,
+					new Class<?>[] { String.class }, new Object[] { s });
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException){
+				throw (RuntimeException) cause;
+			} else {
+				throw new RuntimeException(cause);
+			}
+		}
 		return ret;
 	}
 
