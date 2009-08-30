@@ -30,7 +30,7 @@ public class YqlTwitter extends Twitter {
 	 * 
 	 */
 	private static final long serialVersionUID = -4545368679112332540L;
-	private static final boolean DEBUG = true;//System.getProperty("YqlTwitter.debug") != null;
+	private static final boolean DEBUG = System.getProperty("YqlTwitter.debug") != null;
 
 	/*
 	private static final String API_KEY = "dj0yJmk9VXZBSzNjc0Vwcm1MJmQ9WVdrOVlVczBSVkJNTkdzbWNHbzlNVEV4TWpjNE5EZ3lNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD01Mg--";
