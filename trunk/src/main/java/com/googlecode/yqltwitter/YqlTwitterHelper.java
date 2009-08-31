@@ -89,7 +89,7 @@ import twitter4j.http.Response;
 		try {
 			Class<?>[] parameterTypes = new Class<?>[] { Response.class,
 					Twitter.class };
-			Object[] initargs = new Object[] { response, this };
+			Object[] initargs = new Object[] { response, twitter };
 			return YqlTwitterUtils.newInstance(Status.class, parameterTypes,
 					initargs);
 		} catch (InvocationTargetException e) {
