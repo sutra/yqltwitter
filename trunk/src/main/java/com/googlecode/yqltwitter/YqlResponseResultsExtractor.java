@@ -41,7 +41,7 @@ public class YqlResponseResultsExtractor {
 	 */
 	public Response extract(Response response) {
 		try {
-			YqlTwitter.debug("Extract from: " + response.asString());
+			YqlTwitterUtils.debug("Extract from: " + response.asString());
 			return toResponse(response);
 		} catch (XPathExpressionException e) {
 			throw new RuntimeException(e);
@@ -72,8 +72,10 @@ public class YqlResponseResultsExtractor {
 		// LOG.debug(s);
 		Response ret;
 		try {
-			ret = YqlTwitter.newInstance(Response.class,
-					new Class<?>[] { String.class }, new Object[] { s });
+			Class<?>[] parameterTypes = new Class<?>[] { String.class };
+			Object[] initargs = new Object[] { s };
+			ret = YqlTwitterUtils.newInstance(Response.class, parameterTypes,
+					initargs);
 		} catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof RuntimeException){
