@@ -42,7 +42,7 @@
       var authheader = "Basic "+Base64.encode(username+":"+password);
       var content = "status="+status+"&source="+source;
       if (in_reply_to_status_id != 0) {
-         content += "&in_reply_to_status_id" + in_reply_to_status_id;
+         content += "&in_reply_to_status_id=" + in_reply_to_status_id;
       }
       response.object =
 request.header("Authorization",authheader).post(content).response;
