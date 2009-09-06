@@ -86,6 +86,30 @@ import twitter4j.http.Response;
 		String q = String.format(format, TABLE_BASE_URL, status, twitter
 				.getUserId(), twitter.getPassword(), twitter.getSource());
 		Response response = post(q, true);
+		return toStatus(response);
+	}
+
+	public Status updateStatus(String status, long inReplyToStatusId)
+			throws TwitterException {
+		String format = "use '%1$stwitter.status.xml' as s;"
+				+ " insert into s(status,username,password,in_reply_to_status_id,source) values ('%2$s','%3$s','%4$s','%5$s','%6$s')";
+		String q = String.format(format, TABLE_BASE_URL, status, twitter
+				.getUserId(), twitter.getPassword(), inReplyToStatusId, twitter
+				.getSource());
+		Response response = post(q, true);
+		return toStatus(response);
+	}
+
+	/**
+	 * Construct status from the <code>response</code>.
+	 * 
+	 * @param response
+	 *            the response
+	 * @return a status
+	 * @throws TwitterException
+	 *             indicate constract failed
+	 */
+	private Status toStatus(Response response) throws TwitterException {
 		try {
 			Class<?>[] parameterTypes = new Class<?>[] { Response.class,
 					Twitter.class };

@@ -102,8 +102,7 @@ public class YqlTwitter extends Twitter {
 	@Override
 	public Status updateStatus(String status, long inReplyToStatusId)
 			throws TwitterException {
-		// TODO Auto-generated method stub
-		return super.updateStatus(status, inReplyToStatusId);
+		return helper.updateStatus(status, inReplyToStatusId);
 	}
 
 	/**
