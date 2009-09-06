@@ -92,7 +92,7 @@ import twitter4j.http.Response;
 	public Status updateStatus(String status, long inReplyToStatusId)
 			throws TwitterException {
 		String format = "use '%1$stwitter.status.xml' as s;"
-				+ " insert into s(status,username,password,in_reply_to_status_id,source) values ('%2$s','%3$s','%4$s','%5$s','%6$s')";
+				+ " insert into s(status,username,password,in_reply_to_status_id,source) values ('%2$s','%3$s','%4$s',%5$s,'%6$s')";
 		String q = String.format(format, TABLE_BASE_URL, status, twitter
 				.getUserId(), twitter.getPassword(), inReplyToStatusId, twitter
 				.getSource());
