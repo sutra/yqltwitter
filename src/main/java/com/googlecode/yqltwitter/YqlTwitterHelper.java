@@ -5,7 +5,9 @@
 package com.googlecode.yqltwitter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Map;
 
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
@@ -42,7 +44,7 @@ import twitter4j.http.Response;
 				twitter.getPassword());
 		Response response = get(q, true);
 		try {
-			return YqlTwitterUtils.constructStatuses(response, twitter);
+			return StatusUtils.constructStatuses(response, twitter);
 		} catch (TwitterException te) {
 			System.err.println(String.format("q: %1$s, results: %2$s", q,
 					response.asString()));
@@ -55,7 +57,15 @@ import twitter4j.http.Response;
 				+ " select * from pt";
 		String q = String.format(format, TABLE_BASE_URL);
 		Response response = get(q, false);
-		return YqlTwitterUtils.constructStatuses(response, twitter);
+		HttpURLConnection con = ResponseUtils.getCon(response);
+		Map<String, List<String>> fs = con.getHeaderFields();
+		for (Map.Entry<String, List<String>> entry : fs.entrySet()) {
+			System.out.print(entry.getKey());
+			System.out.print(": ");
+			System.out.println(entry.getValue());
+		}
+
+		return StatusUtils.constructStatuses(response, twitter);
 	}
 
 	public RateLimitStatus rateLimitStatus() throws TwitterException {
@@ -86,7 +96,7 @@ import twitter4j.http.Response;
 		String q = String.format(format, TABLE_BASE_URL, status, twitter
 				.getUserId(), twitter.getPassword(), twitter.getSource());
 		Response response = post(q, true);
-		return toStatus(response);
+		return StatusUtils.toStatus(response, twitter);
 	}
 
 	public Status updateStatus(String status, long inReplyToStatusId)
@@ -97,35 +107,7 @@ import twitter4j.http.Response;
 				.getUserId(), twitter.getPassword(), inReplyToStatusId, twitter
 				.getSource());
 		Response response = post(q, true);
-		return toStatus(response);
-	}
-
-	/**
-	 * Construct status from the <code>response</code>.
-	 * 
-	 * @param response
-	 *            the response
-	 * @return a status
-	 * @throws TwitterException
-	 *             indicate constract failed
-	 */
-	private Status toStatus(Response response) throws TwitterException {
-		try {
-			Class<?>[] parameterTypes = new Class<?>[] { Response.class,
-					Twitter.class };
-			Object[] initargs = new Object[] { response, twitter };
-			return YqlTwitterUtils.newInstance(Status.class, parameterTypes,
-					initargs);
-		} catch (InvocationTargetException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof TwitterException) {
-				throw (TwitterException) cause;
-			} else if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			} else {
-				throw new RuntimeException(cause);
-			}
-		}
+		return StatusUtils.toStatus(response, twitter);
 	}
 
 	private Response get(String q, boolean authenticate)
