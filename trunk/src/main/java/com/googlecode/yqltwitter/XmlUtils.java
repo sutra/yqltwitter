@@ -27,9 +27,14 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
+ * Operations to assist XML.
+ * 
  * @author Sutra Zhou
  */
 /* package */class XmlUtils {
+	/**
+	 * Document builder.
+	 */
 	private static ThreadLocal<DocumentBuilder> builders = new ThreadLocal<DocumentBuilder>() {
 		@Override
 		protected DocumentBuilder initialValue() {
@@ -42,6 +47,9 @@ import org.xml.sax.SAXException;
 		}
 	};
 
+	/**
+	 * XML transformer.
+	 */
 	private static ThreadLocal<Transformer> transformers = new ThreadLocal<Transformer>() {
 		/**
 		 * {@inheritDoc}
@@ -57,17 +65,54 @@ import org.xml.sax.SAXException;
 
 	};
 
+	/**
+	 * Transform string to XML document.
+	 * 
+	 * @param str
+	 *            the string to transform
+	 * @return XML document transformed from the string
+	 * @throws UnsupportedEncodingException
+	 *             encoding "UTF-8" does not support on the platform
+	 * @throws SAXException
+	 *             indicate SAX error
+	 * @throws IOException
+	 *             indicate IO error
+	 */
 	public static Document toDocument(String str)
 			throws UnsupportedEncodingException, SAXException, IOException {
 		return builders.get().parse(
 				new ByteArrayInputStream(str.getBytes("UTF-8")));
 	}
 
+	/**
+	 * Transform input stream to XML document.
+	 * 
+	 * @param is
+	 *            the input stream to transform
+	 * @return XML document transformed from the input stream
+	 * @throws SAXException
+	 *             indicate SAX error
+	 * @throws IOException
+	 *             indicate IO error
+	 */
 	public static Document toDocument(InputStream is) throws SAXException,
 			IOException {
 		return builders.get().parse(is);
 	}
 
+	/**
+	 * Transform to XML document from the URL.
+	 * 
+	 * @param url
+	 *            the url to transform
+	 * @return XML document transformed from the URL.
+	 * @throws SAXException
+	 *             indicate SAX error
+	 * @throws IOException
+	 *             indicate IO error
+	 * @throws URISyntaxException
+	 *             indicate the URL syntax error
+	 */
 	public static Document toDocument(URL url) throws SAXException,
 			IOException, URISyntaxException {
 		return builders.get().parse(url.toURI().toString());
