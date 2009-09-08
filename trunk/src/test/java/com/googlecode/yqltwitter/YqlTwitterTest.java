@@ -3,10 +3,10 @@
  */
 package com.googlecode.yqltwitter;
 
+import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.reset;
-import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -51,16 +51,13 @@ public class YqlTwitterTest {
 		twitter = new YqlTwitter();
 		extractor = new YqlResponseResultsExtractor();
 		con = createMock(HttpURLConnection.class);
-	}
-
-	@Test
-	public void testHttp() {
-		con = createMock(HttpURLConnection.class);
-		con.getHeaderField("X-RateLimit-Limit");
+		expect(con.getHeaderField("X-RateLimit-Limit")).andReturn("150").times(
+				2);
+		expect(con.getHeaderField("X-RateLimit-Remaining")).andReturn("149")
+				.times(2);
+		expect(con.getHeaderField("X-RateLimit-Reset")).andReturn("59")
+				.times(2);
 		replay(con);
-		reset(con);
-		con.getHeaderField("X-RateLimit-Limit");
-		verify(con);
 	}
 
 	@Test
@@ -69,6 +66,7 @@ public class YqlTwitterTest {
 		Response response = toResponse("updateStatus.success.xml");
 		try {
 			Status status = StatusUtils.toStatus(response, twitter);
+			assertEquals(1234567890, status.getId());
 		} catch (TwitterException ex) {
 			ex.printStackTrace();
 			fail("A twitter exception should not be thrown.");
@@ -80,7 +78,14 @@ public class YqlTwitterTest {
 			TransformerException, SAXException, IOException,
 			URISyntaxException, TwitterException {
 		Response response = toResponse("updateStatus.unknown-error.xml");
-		Status status = StatusUtils.toStatus(response, twitter);
+		try {
+			StatusUtils.toStatus(response, twitter);
+			fail("a TwitterException should be thrown.");
+		} catch (TwitterException ex) {
+			assertEquals(
+					"Unexpected root node name:result. Expected:status. Check the availability of the Twitter API at http://status.twitter.com/.",
+					ex.getMessage());
+		}
 	}
 
 	/**
