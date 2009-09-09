@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2009, Sutra Zhou
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the Sutra Zhou nor the
+          names of its contributors may be used to endorse or promote products
+          derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY Sutra Zhou ``AS IS'' AND ANY
+    EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL Sutra Zhou BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
 <query xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" yahoo:count="1" yahoo:created="2009-09-08T06:31:18Z" yahoo:lang="en-US" yahoo:updated="2009-09-08T06:31:18Z" yahoo:uri="https://query.yahooapis.com/v1/yql?q=use+%27http%3A%2F%2Fyqltwitter.googlecode.com%2Fsvn%2Ftrunk%2Fsrc%2Fmain%2Ftable%2Ftwitter.status.xml%27+as+s%3B+insert+into+s%28status%2Cusername%2Cpassword%2Csource%29+values+%28%27%E6%AD%A3%E5%B8%B8%E7%B3%BB%E6%B5%8B%E8%AF%95%E3%80%82%27%2C%27SCREEN_NAME%27%2C%27PASSWORD%27%2C%27Twitter4J%27%29"><diagnostics><publiclyCallable>true</publiclyCallable><url execution-time="3" proxy="DEFAULT"><![CDATA[http://yqltwitter.googlecode.com/svn/trunk/src/main/table/twitter.status.xml]]></url><url execution-time="116" proxy="DEFAULT"><![CDATA[http://yqltwitter.googlecode.com/svn/trunk/src/main/table/base64.js]]></url><url execution-time="4" http-status-code="408" http-status-message="Request Time-out" proxy="DEFAULT"><![CDATA[http://twitter.com/statuses/update.xml]]></url><javascript execution-time="123" instructions-used="13491" table-name="s"></javascript><user-time>133</user-time><service-time>123</service-time><build-version>3013</build-version></diagnostics><results><result></result></results></query><!-- total: 134 -->
 <!-- yqlengine2.pipes.sp1.yahoo.com uncompressed/chunked Mon Sep  7 23:31:18 PDT 2009 -->
 
