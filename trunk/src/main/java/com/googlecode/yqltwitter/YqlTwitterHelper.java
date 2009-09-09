@@ -44,7 +44,12 @@ import twitter4j.http.Response;
  * @author Sutra Zhou
  */
 /* package */class YqlTwitterHelper {
-	private static final String TABLE_BASE_URL = "http://yqltwitter.googlecode.com/svn/trunk/src/main/table/";
+	private static final String DEFAULT_TABLE_BASE_URL = "http://yqltwitter.googlecode.com/svn/trunk/src/main/table/";
+	private static final String TABLE_BASE_URL;
+	static {
+		String baseUrl = System.getProperty("yqltwitter.table.baseUrl");
+		TABLE_BASE_URL = baseUrl == null ? DEFAULT_TABLE_BASE_URL : baseUrl;
+	}
 
 	private final YqlResponseResultsExtractor extractor = new YqlResponseResultsExtractor();
 	private final Twitter twitter;
