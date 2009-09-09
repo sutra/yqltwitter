@@ -26,8 +26,6 @@
  */
 package com.googlecode.yqltwitter;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -36,6 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import twitter4j.TwitterException;
@@ -94,25 +93,24 @@ public class YqlResponseResultsExtractor {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		XPathExpression expr;
+
+		// results
 		expr = xpath.compile("/query/results/*");
-		Node results = (Node) expr.evaluate(document, XPathConstants.NODE);
-		String s = XmlUtils.toString(results);
-		// LOG.debug(s);
-		Response ret;
-		try {
-			Class<?>[] parameterTypes = new Class<?>[] { String.class };
-			Object[] initargs = new Object[] { s };
-			ret = YqlTwitterUtils.newInstance(Response.class, parameterTypes,
-					initargs);
-		} catch (InvocationTargetException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			} else {
-				throw new RuntimeException(cause);
-			}
+		Node resultsNode = (Node) expr.evaluate(document, XPathConstants.NODE);
+		String results = XmlUtils.toString(resultsNode);
+		Response response = ResponseUtils.newResponse(results);
+
+		// HTTP Status
+		expr = xpath.compile("/query/diagnostics/url[starts-with(text(), 'https://twitter.com/')]");
+		Node diagnosticTwitterNode = (Node) expr.evaluate(document, XPathConstants.NODE);
+		NamedNodeMap attributes = diagnosticTwitterNode.getAttributes();
+		Node httpStatusCodeNode = attributes.getNamedItem("http-status-code");
+		if (httpStatusCodeNode != null) {
+			int statusCode = Integer.parseInt(httpStatusCodeNode.getNodeValue());
+			ResponseUtils.setStatusCode(response, statusCode);
 		}
-		return ret;
+
+		return response;
 	}
 
 	/**

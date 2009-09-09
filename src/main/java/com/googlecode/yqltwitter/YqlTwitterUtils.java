@@ -34,6 +34,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import twitter4j.Configuration;
 import twitter4j.Status;
 
 /**
@@ -42,7 +43,7 @@ import twitter4j.Status;
  * @author Sutra Zhou
  */
 /* package */class YqlTwitterUtils {
-	private static final boolean DEBUG = System.getProperty("YqlTwitter.debug") != null;
+	private static final boolean DEBUG = Configuration.getDebug();
 	private static final String YQL = "https://query.yahooapis.com/v1/public/yql?q=";
 	private static final String enc = "UTF-8";
 

@@ -27,6 +27,7 @@
 package com.googlecode.yqltwitter;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 
 import twitter4j.http.Response;
@@ -50,6 +51,31 @@ import twitter4j.http.Response;
 		}
 		STATUS_CODE_FIELD.setAccessible(true);
 		CON_FIELD.setAccessible(true);
+	}
+
+	/**
+	 * Call the constructor of Response with parameter String.
+	 * 
+	 * @param s
+	 *            the parameter
+	 * @return a response instance
+	 */
+	public static Response newResponse(String s) {
+		Response ret;
+		try {
+			Class<?>[] parameterTypes = new Class<?>[] { String.class };
+			Object[] initargs = new Object[] { s };
+			ret = YqlTwitterUtils.newInstance(Response.class, parameterTypes,
+					initargs);
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			} else {
+				throw new RuntimeException(cause);
+			}
+		}
+		return ret;
 	}
 
 	/**
