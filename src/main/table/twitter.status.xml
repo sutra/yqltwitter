@@ -35,7 +35,7 @@
 	<bindings>
 		<select itemPath="" produces="XML">
 			<urls>
-				<url>http://twitter.com/statuses/show/{id}.xml</url>
+				<url>https://twitter.com/statuses/show/{id}.xml</url>
 			</urls>
 			<inputs>
 				<key id="username" type="xs:string" required="false" paramType="variable"/>
@@ -56,7 +56,7 @@
 		</select>
 		<insert itemPath="" produces="XML">
 			<urls>
-				<url>http://twitter.com/statuses/update.xml</url>
+				<url>https://twitter.com/statuses/update.xml</url>
 			</urls>
 			<inputs>
 				<value id="username" type="xs:string" required="true" paramType="variable"/>
@@ -78,7 +78,7 @@ request.header("Authorization",authheader).post(content).response;
 		</insert>
 		<delete itemPath="" produces="XML">
 			<urls>
-				<url>http://twitter.com/statuses/destroy/{id}.xml</url>
+				<url>https://twitter.com/statuses/destroy/{id}.xml</url>
 			</urls>
 			<inputs>
 				<key id="username" type="xs:string" required="true" paramType="variable"/>
