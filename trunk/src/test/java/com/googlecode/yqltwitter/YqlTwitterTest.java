@@ -63,7 +63,7 @@ public class YqlTwitterTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		System.setProperty("YqlTwitter.debug", "true");
+		System.setProperty("twitter4j.debug", "true");
 	}
 
 	/**
@@ -97,10 +97,43 @@ public class YqlTwitterTest {
 	}
 
 	@Test
-	public void testUpdateStatusUnknowError() throws XPathExpressionException,
+	public void testUpdateStatusUnauthorized() throws XPathExpressionException,
 			TransformerException, SAXException, IOException,
 			URISyntaxException, TwitterException {
-		Response response = toResponse("updateStatus.unknown-error.xml");
+		Response response = toResponse("updateStatus.401-Unauthorized.xml");
+		assertEquals(401, response.getStatusCode());
+		try {
+			StatusUtils.toStatus(response, twitter);
+			fail("a TwitterException should be thrown.");
+		} catch (TwitterException ex) {
+			assertEquals(
+					"Unexpected root node name:result. Expected:status. Check the availability of the Twitter API at http://status.twitter.com/.",
+					ex.getMessage());
+		}
+	}
+
+	@Test
+	public void testUpdateStatusRequestTimeOut()
+			throws XPathExpressionException, TransformerException,
+			SAXException, IOException, URISyntaxException, TwitterException {
+		Response response = toResponse("updateStatus.408-Request Time-out.xml");
+		assertEquals(408, response.getStatusCode());
+		try {
+			StatusUtils.toStatus(response, twitter);
+			fail("a TwitterException should be thrown.");
+		} catch (TwitterException ex) {
+			assertEquals(
+					"Unexpected root node name:result. Expected:status. Check the availability of the Twitter API at http://status.twitter.com/.",
+					ex.getMessage());
+		}
+	}
+
+	@Test
+	public void testUpdateStatusServiceUnavailable()
+			throws XPathExpressionException, TransformerException,
+			SAXException, IOException, URISyntaxException, TwitterException {
+		Response response = toResponse("updateStatus.503-Service Unavailable.xml");
+		assertEquals(503, response.getStatusCode());
 		try {
 			StatusUtils.toStatus(response, twitter);
 			fail("a TwitterException should be thrown.");
