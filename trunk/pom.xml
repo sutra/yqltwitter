@@ -36,7 +36,17 @@
 				<version>1.4.0</version>
 				<configuration>
 					<header>LICENSE.txt</header>
+					<excludes>
+						<exclude>src/test/resources/com/googlecode/yqltwitter/*.xml</exclude>
+					</excludes>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
