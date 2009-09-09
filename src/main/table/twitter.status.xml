@@ -66,15 +66,23 @@
 				<value id="source" type="xs:string" required="false" paramType="variable"/>
 			</inputs>
 			<execute><![CDATA[
-      y.include("http://yqltwitter.googlecode.com/svn/trunk/src/main/table/base64.js");
-      var authheader = "Basic "+Base64.encode(username+":"+password);
-      var content = "status="+status+"&source="+source;
-      if (in_reply_to_status_id != 0) {
-         content += "&in_reply_to_status_id=" + in_reply_to_status_id;
-      }
-      response.object =
-request.header("Authorization",authheader).post(content).response;
-      ]]></execute>
+y.include("http://yqltwitter.googlecode.com/svn/trunk/src/main/table/base64.js");
+var authheader = "Basic "+Base64.encode(username+":"+password);
+/*
+var content = "status="+status+"&source="+source;
+if (in_reply_to_status_id != 0) {
+	content += "&in_reply_to_status_id=" + in_reply_to_status_id;
+}
+response.object =
+	request.header("Authorization",authheader).post(content).response;
+*/
+var req = request.header("Authorization",authheader);
+req = req.query("status", status).query("source", source);
+if (in_reply_to_status_id != 0) {
+	req = req.query("in_reply_to_status_id", in_reply_to_status_id);
+}
+response.object = r.post().response;
+]]></execute>
 		</insert>
 		<delete itemPath="" produces="XML">
 			<urls>
