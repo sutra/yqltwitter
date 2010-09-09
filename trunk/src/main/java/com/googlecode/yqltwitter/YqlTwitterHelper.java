@@ -120,8 +120,9 @@ import twitter4j.http.Response;
 	public Status updateStatus(String status) throws TwitterException {
 		String format = "use '%1$stwitter.status.xml' as s;"
 				+ " insert into s(status,username,password,source) values ('%2$s','%3$s','%4$s','%5$s')";
-		String q = String.format(format, TABLE_BASE_URL, status, twitter
-				.getUserId(), twitter.getPassword(), twitter.getSource());
+		String q = String.format(format, TABLE_BASE_URL, escape(status),
+				escape(twitter.getUserId()), escape(twitter.getPassword()),
+				escape(twitter.getSource()));
 		Response response = post(q, true);
 		return StatusUtils.toStatus(response, twitter);
 	}
@@ -130,9 +131,9 @@ import twitter4j.http.Response;
 			throws TwitterException {
 		String format = "use '%1$stwitter.status.xml' as s;"
 				+ " insert into s(status,username,password,in_reply_to_status_id,source) values ('%2$s','%3$s','%4$s',%5$s,'%6$s')";
-		String q = String.format(format, TABLE_BASE_URL, status, twitter
-				.getUserId(), twitter.getPassword(), inReplyToStatusId, twitter
-				.getSource());
+		String q = String.format(format, TABLE_BASE_URL, escape(status),
+				escape(twitter.getUserId()), escape(twitter.getPassword()),
+				inReplyToStatusId, escape(twitter.getSource()));
 		Response response = post(q, true);
 		return StatusUtils.toStatus(response, twitter);
 	}
@@ -153,4 +154,14 @@ import twitter4j.http.Response;
 		return extractor.extract(response);
 	}
 
+	/**
+	 * Escape the quote for YQL.
+	 * 
+	 * @param value
+	 *            the string to escape
+	 * @return the escaped string
+	 */
+	private String escape(final String value) {
+		return value == null ? null : value.replaceAll("\\'", "\\\\\'");
+	}
 }
