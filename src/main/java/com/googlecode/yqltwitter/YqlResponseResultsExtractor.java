@@ -103,11 +103,13 @@ public class YqlResponseResultsExtractor {
 		// HTTP Status
 		expr = xpath.compile("/query/diagnostics/url[starts-with(text(), 'https://twitter.com/')]");
 		Node diagnosticTwitterNode = (Node) expr.evaluate(document, XPathConstants.NODE);
-		NamedNodeMap attributes = diagnosticTwitterNode.getAttributes();
-		Node httpStatusCodeNode = attributes.getNamedItem("http-status-code");
-		if (httpStatusCodeNode != null) {
-			int statusCode = Integer.parseInt(httpStatusCodeNode.getNodeValue());
-			ResponseUtils.setStatusCode(response, statusCode);
+		if (diagnosticTwitterNode != null) {
+			NamedNodeMap attributes = diagnosticTwitterNode.getAttributes();
+			Node httpStatusCodeNode = attributes.getNamedItem("http-status-code");
+			if (httpStatusCodeNode != null) {
+				int statusCode = Integer.parseInt(httpStatusCodeNode.getNodeValue());
+				ResponseUtils.setStatusCode(response, statusCode);
+			}
 		}
 
 		return response;
