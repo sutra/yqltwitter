@@ -1,0 +1,1 @@
+An extension for [twitter4j](http://yusuke.homeip.net/twitter4j/en/index.html), that access twitter API through [YQL](http://developer.yahoo.com/yql/).
